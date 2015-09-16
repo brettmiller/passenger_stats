@@ -20,10 +20,10 @@ max_pool_size = doc.xpath('//max').children[0].to_s
 processes_used = doc.xpath('//capacity_used').children[0].to_s
 top_level_queue = doc.xpath('//get_wait_list_size').children[0].to_s
 
-puts METRIC_BASE_NAME + "processes " +  processes + " #{TIMESTAMP}"
-puts METRIC_BASE_NAME + "max_pool_size " + max_pool_size + " #{TIMESTAMP}"
-puts METRIC_BASE_NAME + "processes_used " + processes_used + " #{TIMESTAMP}"
-puts METRIC_BASE_NAME + "top_level_queue " + top_level_queue + " #{TIMESTAMP}"
+puts METRIC_BASE_NAME + "processes " +  processes + " #{TIMESTAMP}\n"
+puts METRIC_BASE_NAME + "max_pool_size " + max_pool_size + " #{TIMESTAMP}\n"
+puts METRIC_BASE_NAME + "processes_used " + processes_used + " #{TIMESTAMP}\n"
+puts METRIC_BASE_NAME + "top_level_queue " + top_level_queue + " #{TIMESTAMP}\n"
 
 
 def name_format(name, process_index)
