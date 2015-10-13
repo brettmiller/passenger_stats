@@ -69,7 +69,8 @@ end
 
 # get process stats in the correct format and strip REMOVE_PATH
 def name_format(name, process_index)
-  name.gsub(/#{REMOVE_PATH}/,'').gsub(/\//, '_').gsub(/_current$/,'_') + "process_#{process_index}"
+  #name.gsub(/#{REMOVE_PATH}/,'').gsub(/\//, '_').gsub(/_current$/,'_') + "process_#{process_index}"
+  name.gsub(/#{REMOVE_PATH}/,'').gsub(/\//, '_').gsub(/_current$/,'.') + "process_#{process_index}"
 end
 
 # Get per app and per process stats
@@ -86,15 +87,16 @@ doc.xpath('//supergroups')[0].xpath('./supergroup').each do |supergroup|
   #puts("#{prefix_name_}.wait_list #{wait_list} #{TIMESTAMP}\n")
   #puts("#{prefix_name_}.capacity_used #{capacity_used} #{TIMESTAMP}\n") 
  # Per process stats
-##  supergroup.xpath('./group/processes/process').each_with_index do |process, i|
-##    prefix_name = name_format(name, i)
-##    extract_elements(process, prefix_name).each do |stat| 
-##     # puts("#{stat} #{TIMESTAMP}\n")
-##      stat_CLIENT_SOCKET = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
-##      stat_CLIENT_SOCKET.write("#{stat} #{TIMESTAMP}\n")
-##      stat_CLIENT_SOCKET.flush
-##      stat_CLIENT_SOCKET.close_write
-##    end
-## end
+  supergroup.xpath('./group/processes/process').each_with_index do |process, i|
+    prefix_name = name_format(name, i)
+    extract_elements(process, prefix_name).each do |stat| 
+      puts("prefix_name: #{prefix_name}")
+      puts("#{stat} #{TIMESTAMP}\n")
+      stat_CLIENT_SOCKET = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
+      stat_CLIENT_SOCKET.write("#{stat} #{TIMESTAMP}\n")
+      stat_CLIENT_SOCKET.flush
+      stat_CLIENT_SOCKET.close_write
+    end
+ end
 end
 
