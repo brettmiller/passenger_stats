@@ -69,7 +69,6 @@ end
 
 # get process stats in the correct format and strip REMOVE_PATH
 def name_format(name, process_index)
-  #name.gsub(/#{REMOVE_PATH}/,'').gsub(/\//, '_').gsub(/_current$/,'_') + "process_#{process_index}"
   name.gsub(/#{REMOVE_PATH}/,'').gsub(/\//, '_').gsub(/_current$/,'.') + "process_#{process_index}"
 end
 
