@@ -32,7 +32,6 @@ if ( options['server'].nil? ) || (!options['server'].nil? && options['server'].e
   abort("\n\nNo Graphite servers specifed in #{conf_file}\n\n")
 end
 
-
 # REMOVE_PATH is stripped from the metric name. The root directory which contains the directories for your app(s).
 REMOVE_PATH = "#{options['metric_strip']}"
 TIMESTAMP = Time.now.to_i.to_s
@@ -44,7 +43,8 @@ CLIENT_SOCKET = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
 #PROCESS_ELEMENTS = %w(pid real_memory cpu vmsize processed)
 PROCESS_ELEMENTS = %w(real_memory cpu vmsize processed)
 
-doc = Nokogiri::XML(File.open("#{script_dir}/passenger-out.xml"))
+#doc = Nokogiri::XML(File.open("#{script_dir}/passenger-out.xml"))  # for testing with a local xml file
+doc = Nokogiri::XML(`#{options['cmd_path']} --show=xml`)
 
 # Get overall (top level) passenger stats
 process_count = doc.xpath('//process_count').children[0].to_s
