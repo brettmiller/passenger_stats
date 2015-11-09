@@ -6,5 +6,5 @@ scheme:
 server: 'localhost'
 # TCP port Graphite server listens on. Defaults to 2003.
 server_port: '2003'
-# Portion of the full metric name to be removed in the output
+# Portion of the full metric name to be removed when sent to graphite.
 metric_strip: '/var/www/'
