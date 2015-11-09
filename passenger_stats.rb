@@ -41,7 +41,8 @@ GRAPHITE_PORT= "#{options['server_port']}"
 CLIENT_SOCKET = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
 
 #PROCESS_ELEMENTS = %w(pid real_memory cpu vmsize processed)
-PROCESS_ELEMENTS = %w(real_memory cpu vmsize processed)
+#PROCESS_ELEMENTS = %w(real_memory cpu vmsize processed)
+PROCESS_ELEMENTS = %w(real_memory cpu)
 
 #doc = Nokogiri::XML(File.open("#{script_dir}/passenger-out.xml"))  # for testing with a local xml file
 doc = Nokogiri::XML(`#{options['cmd_path']} --show=xml`)
@@ -86,16 +87,16 @@ doc.xpath('//supergroups')[0].xpath('./supergroup').each do |supergroup|
   #puts("#{prefix_name_}.wait_list #{wait_list} #{TIMESTAMP}\n")
   #puts("#{prefix_name_}.capacity_used #{capacity_used} #{TIMESTAMP}\n") 
  # Per process stats
-##  supergroup.xpath('./group/processes/process').each_with_index do |process, i|
-##    prefix_name = name_format(name, i)
-##    extract_elements(process, prefix_name).each do |stat| 
-##      puts("prefix_name: #{prefix_name}")
-##      puts("#{stat} #{TIMESTAMP}\n")
-##      stat_CLIENT_SOCKET = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
-##      stat_CLIENT_SOCKET.write("#{stat} #{TIMESTAMP}\n")
-##      stat_CLIENT_SOCKET.flush
-##      stat_CLIENT_SOCKET.close_write
-##    end
-## end
+  supergroup.xpath('./group/processes/process').each_with_index do |process, i|
+    prefix_name = name_format(name, i)
+    extract_elements(process, prefix_name).each do |stat| 
+    #  puts("prefix_name: #{prefix_name}")
+    #  puts("#{stat} #{TIMESTAMP}\n")
+      stat_CLIENT_SOCKET = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
+      stat_CLIENT_SOCKET.write("#{stat} #{TIMESTAMP}\n")
+      stat_CLIENT_SOCKET.flush
+      stat_CLIENT_SOCKET.close_write
+    end
+ end
 end
 
