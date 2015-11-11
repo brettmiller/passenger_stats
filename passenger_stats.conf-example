@@ -10,5 +10,8 @@ server: 'localhost'
 # TCP port Graphite server listens on. Defaults to 2003.
 server_port: '2003'
 
+# How often to collect and sending stats to graphite, in minutes.  Defaults to 5 minutes.
+collect_interval:
+
 # Portion of the full metric name to be removed when sent to graphite.
 metric_strip: '/var/www/'

@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+#
+# daemonize/control passenger_stats.rb
+
+require 'daemons'
+
+Daemons.run('passenger_stats.rb')
+
