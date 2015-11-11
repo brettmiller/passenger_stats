@@ -68,12 +68,12 @@ loop do
   capacity_used = doc.xpath('//capacity_used').children[0].to_s
   top_level_queue = doc.xpath('//get_wait_list_size').children[0].to_s
   
-  CLIENT_SOCKET = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
-  CLIENT_SOCKET.write("#{METRIC_BASE_NAME}.process_count #{process_count} #{TIMESTAMP}\n")
-  CLIENT_SOCKET.write("#{METRIC_BASE_NAME}.max_pool_size #{max_pool_size} #{TIMESTAMP}\n")
-  CLIENT_SOCKET.write("#{METRIC_BASE_NAME}.capacity_used #{capacity_used} #{TIMESTAMP}\n")
-  CLIENT_SOCKET.write("#{METRIC_BASE_NAME}.top_level_queue #{top_level_queue} #{TIMESTAMP}\n")
-  CLIENT_SOCKET.close
+  client_socket = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
+  client_socket.write("#{METRIC_BASE_NAME}.process_count #{process_count} #{TIMESTAMP}\n")
+  client_socket.write("#{METRIC_BASE_NAME}.max_pool_size #{max_pool_size} #{TIMESTAMP}\n")
+  client_socket.write("#{METRIC_BASE_NAME}.capacity_used #{capacity_used} #{TIMESTAMP}\n")
+  client_socket.write("#{METRIC_BASE_NAME}.top_level_queue #{top_level_queue} #{TIMESTAMP}\n")
+  client_socket.close
   #puts("#{METRIC_BASE_NAME}.process_count #{process_count} #{TIMESTAMP}\n")
   #puts("#{METRIC_BASE_NAME}.max_pool_size #{max_pool_size} #{TIMESTAMP}\n")
   #puts("#{METRIC_BASE_NAME}.capacity_used #{capacity_used} #{TIMESTAMP}\n")
@@ -86,10 +86,10 @@ loop do
     wait_list = supergroup.xpath('./get_wait_list_size')[0].content
     capacity_used = supergroup.xpath('./capacity_used')[0].content
     prefix_name_ = name.gsub(/#{REMOVE_PATH}/,'').gsub(/\//, '_').gsub(/_current$/,'')
-    supergroup_CLIENT_SOCKET = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
-    supergroup_CLIENT_SOCKET.write("#{prefix_name_}.wait_list #{wait_list} #{TIMESTAMP}\n")
-    supergroup_CLIENT_SOCKET.write("#{prefix_name_}.capacity_used #{capacity_used} #{TIMESTAMP}\n") 
-    supergroup_CLIENT_SOCKET.close_write
+    supergroup_client_socket = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
+    supergroup_client_socket.write("#{prefix_name_}.wait_list #{wait_list} #{TIMESTAMP}\n")
+    supergroup_client_socket.write("#{prefix_name_}.capacity_used #{capacity_used} #{TIMESTAMP}\n") 
+    supergroup_client_socket.close_write
     #puts("#{prefix_name_}.wait_list #{wait_list} #{TIMESTAMP}\n")
     #puts("#{prefix_name_}.capacity_used #{capacity_used} #{TIMESTAMP}\n") 
    # Per process stats
@@ -98,10 +98,10 @@ loop do
       extract_elements(process, prefix_name).each do |stat| 
       #  puts("prefix_name: #{prefix_name}")
       #  puts("#{stat} #{TIMESTAMP}\n")
-        stat_CLIENT_SOCKET = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
-        stat_CLIENT_SOCKET.write("#{stat} #{TIMESTAMP}\n")
-        stat_CLIENT_SOCKET.flush
-        stat_CLIENT_SOCKET.close_write
+        stat_client_socket = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
+        stat_client_socket.write("#{stat} #{TIMESTAMP}\n")
+        stat_client_socket.flush
+        stat_client_socket.close_write
       end
     end
   end
