@@ -39,7 +39,6 @@ wait_time = "#{options['collect_interval']}".to_f * 60
 
 # REMOVE_PATH is stripped from the metric name. The root directory which contains the directories for your app(s).
 REMOVE_PATH = "#{options['metric_strip']}"
-TIMESTAMP = Time.now.to_i.to_s
 METRIC_BASE_NAME = "#{options['scheme']}"
 GRAPHITE_HOST= "#{options['server']}"
 GRAPHITE_PORT= "#{options['server_port']}"
@@ -59,6 +58,7 @@ def name_format(name, process_index)
 end
 
 loop do
+  TIMESTAMP = Time.now.to_i.to_s
   #doc = Nokogiri::XML(File.open("#{script_dir}/passenger-out.xml"))  # for testing with a local xml file
   doc = Nokogiri::XML(`#{options['cmd_path']} --show=xml`)
   
