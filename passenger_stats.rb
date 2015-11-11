@@ -58,7 +58,7 @@ def name_format(name, process_index)
 end
 
 loop do
-  TIMESTAMP = Time.now.to_i.to_s
+  timestamp = Time.now.to_i.to_s
   #doc = Nokogiri::XML(File.open("#{script_dir}/passenger-out.xml"))  # for testing with a local xml file
   doc = Nokogiri::XML(`#{options['cmd_path']} --show=xml`)
   
@@ -69,15 +69,15 @@ loop do
   top_level_queue = doc.xpath('//get_wait_list_size').children[0].to_s
   
   client_socket = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
-  client_socket.write("#{METRIC_BASE_NAME}.process_count #{process_count} #{TIMESTAMP}\n")
-  client_socket.write("#{METRIC_BASE_NAME}.max_pool_size #{max_pool_size} #{TIMESTAMP}\n")
-  client_socket.write("#{METRIC_BASE_NAME}.capacity_used #{capacity_used} #{TIMESTAMP}\n")
-  client_socket.write("#{METRIC_BASE_NAME}.top_level_queue #{top_level_queue} #{TIMESTAMP}\n")
+  client_socket.write("#{METRIC_BASE_NAME}.process_count #{process_count} #{timestamp}\n")
+  client_socket.write("#{METRIC_BASE_NAME}.max_pool_size #{max_pool_size} #{timestamp}\n")
+  client_socket.write("#{METRIC_BASE_NAME}.capacity_used #{capacity_used} #{timestamp}\n")
+  client_socket.write("#{METRIC_BASE_NAME}.top_level_queue #{top_level_queue} #{timestamp}\n")
   client_socket.close
-  #puts("#{METRIC_BASE_NAME}.process_count #{process_count} #{TIMESTAMP}\n")
-  #puts("#{METRIC_BASE_NAME}.max_pool_size #{max_pool_size} #{TIMESTAMP}\n")
-  #puts("#{METRIC_BASE_NAME}.capacity_used #{capacity_used} #{TIMESTAMP}\n")
-  #puts("#{METRIC_BASE_NAME}.top_level_queue #{top_level_queue} #{TIMESTAMP}\n")
+  #puts("#{METRIC_BASE_NAME}.process_count #{process_count} #{timestamp}\n")
+  #puts("#{METRIC_BASE_NAME}.max_pool_size #{max_pool_size} #{timestamp}\n")
+  #puts("#{METRIC_BASE_NAME}.capacity_used #{capacity_used} #{timestamp}\n")
+  #puts("#{METRIC_BASE_NAME}.top_level_queue #{top_level_queue} #{timestamp}\n")
   
   # Get per app and per process stats
   doc.xpath('//supergroups')[0].xpath('./supergroup').each do |supergroup|
@@ -87,19 +87,19 @@ loop do
     capacity_used = supergroup.xpath('./capacity_used')[0].content
     prefix_name_ = name.gsub(/#{REMOVE_PATH}/,'').gsub(/\//, '_').gsub(/_current$/,'')
     supergroup_client_socket = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
-    supergroup_client_socket.write("#{prefix_name_}.wait_list #{wait_list} #{TIMESTAMP}\n")
-    supergroup_client_socket.write("#{prefix_name_}.capacity_used #{capacity_used} #{TIMESTAMP}\n") 
+    supergroup_client_socket.write("#{prefix_name_}.wait_list #{wait_list} #{timestamp}\n")
+    supergroup_client_socket.write("#{prefix_name_}.capacity_used #{capacity_used} #{timestamp}\n") 
     supergroup_client_socket.close_write
-    #puts("#{prefix_name_}.wait_list #{wait_list} #{TIMESTAMP}\n")
-    #puts("#{prefix_name_}.capacity_used #{capacity_used} #{TIMESTAMP}\n") 
+    #puts("#{prefix_name_}.wait_list #{wait_list} #{timestamp}\n")
+    #puts("#{prefix_name_}.capacity_used #{capacity_used} #{timestamp}\n") 
    # Per process stats
     supergroup.xpath('./group/processes/process').each_with_index do |process, i|
       prefix_name = name_format(name, i)
       extract_elements(process, prefix_name).each do |stat| 
       #  puts("prefix_name: #{prefix_name}")
-      #  puts("#{stat} #{TIMESTAMP}\n")
+      #  puts("#{stat} #{timestamp}\n")
         stat_client_socket = TCPSocket.new( GRAPHITE_HOST, GRAPHITE_PORT )
-        stat_client_socket.write("#{stat} #{TIMESTAMP}\n")
+        stat_client_socket.write("#{stat} #{timestamp}\n")
         stat_client_socket.flush
         stat_client_socket.close_write
       end
